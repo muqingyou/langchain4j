@@ -17,11 +17,23 @@ import reactor.core.publisher.Flux;
 public class XiaozhiController {
     @Autowired
     private XiaozhiAgent xiaozhiAgent;
+    
     @Operation(summary = "对话")
     @PostMapping(value = "/chat", produces = "text/stream;charset=utf-8")
     public Flux<String> chat(@RequestBody ChatForm chatForm) {
         return xiaozhiAgent.chat(chatForm.getMemoryId(), chatForm.getMessage());
     }
+    
+    @Operation(summary = "对话（层级递归总结）")
+    @PostMapping(value = "/chat-hierarchical", produces = "text/stream;charset=utf-8")
+    public Flux<String> chatWithHierarchicalSummarization(@RequestBody ChatForm chatForm) {
+        return xiaozhiAgent.chatWithHierarchicalSummarization(chatForm.getMemoryId(), chatForm.getMessage());
+    }
+//    @Operation(summary = "对话（带记忆压缩）")
+//    @PostMapping(value = "/chat-compressed", produces = "text/stream;charset=utf-8")
+//    public Flux<String> chatWithCompression(@RequestBody ChatForm chatForm) {
+//        return xiaozhiAgent.chatWithCompression(chatForm.getMemoryId(), chatForm.getMessage());
+//    }
 //    @Operation(summary = "对话")
 //    @PostMapping("/chat")
 //    public String chat(@RequestBody ChatForm chatForm) {

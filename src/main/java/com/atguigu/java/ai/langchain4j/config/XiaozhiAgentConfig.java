@@ -1,11 +1,13 @@
 package com.atguigu.java.ai.langchain4j.config;
 
+import com.atguigu.java.ai.langchain4j.store.HierarchicalSummarizationMemoryStore;
 import com.atguigu.java.ai.langchain4j.store.MongoChatMemoryStore;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
@@ -23,16 +25,30 @@ import java.util.List;
 public class XiaozhiAgentConfig {
     @Autowired
     private MongoChatMemoryStore mongoChatMemoryStore;
+    
+    @Autowired
+    private HierarchicalSummarizationMemoryStore hierarchicalSummarizationMemoryStore;
+    
     @Autowired
     private EmbeddingStore embeddingStore;
     @Autowired
     private EmbeddingModel embeddingModel;
+    
     @Bean
     ChatMemoryProvider chatMemoryProviderXiaozhi() {
         return memoryId -> MessageWindowChatMemory.builder()
                 .id(memoryId)
                 .maxMessages(20)
                 .chatMemoryStore(mongoChatMemoryStore)
+                .build();
+    }
+    
+    @Bean
+    ChatMemoryProvider chatMemoryProviderXiaozhiWithHierarchicalSummarization() {
+        return memoryId -> MessageWindowChatMemory.builder()
+                .id(memoryId)
+                .maxMessages(20)
+                .chatMemoryStore(hierarchicalSummarizationMemoryStore)
                 .build();
     }
 
