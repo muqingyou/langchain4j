@@ -2,7 +2,6 @@ package com.atguigu.java.ai.langchain4j.controller;
 
 import com.atguigu.java.ai.langchain4j.assistant.XiaozhiAgent;
 import com.atguigu.java.ai.langchain4j.bean.ChatForm;
-import com.atguigu.java.ai.langchain4j.service.KnowledgeBaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,7 @@ public class TestController {
     @Autowired
     private XiaozhiAgent xiaozhiAgent;
     
-    @Autowired
-    private KnowledgeBaseService knowledgeBaseService;
-    
-    @Operation(summary = "测试分导诊功能", description = "测试AI分导诊和Bing搜索集成")
+    @Operation(summary = "测试智能分导诊功能", description = "测试集成在BaiduSearchTools中的智能分导诊功能")
     @PostMapping(value = "/guidance", produces = "text/stream;charset=utf-8")
     public Flux<String> testGuidance(@RequestParam String symptoms, @RequestParam(defaultValue = "1") Long memoryId) {
         String message = "我最近有这些症状：" + symptoms + "，请帮我分析一下应该挂哪个科室？";
@@ -44,11 +40,5 @@ public class TestController {
     @PostMapping(value = "/memory", produces = "text/stream;charset=utf-8")
     public Flux<String> testMemory(@RequestParam String message, @RequestParam(defaultValue = "1") Long memoryId) {
         return xiaozhiAgent.chatWithHierarchicalSummarization(memoryId, message);
-    }
-    
-    @Operation(summary = "获取知识库状态", description = "获取知识库加载状态")
-    @GetMapping("/knowledge-status")
-    public String getKnowledgeStatus() {
-        return knowledgeBaseService.getKnowledgeBaseStats();
     }
 }
